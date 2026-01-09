@@ -7,15 +7,24 @@
 //! for instance, to gain functionality without forcing a dependency on Substrate crates here.
 
 use codec::{Decode, Encode};
+use scale_info::TypeInfo;
+
+#[derive(Clone, PartialEq, Eq, Ord, PartialOrd, Encode, Decode, TypeInfo, Debug)]
+pub struct DilithiumMultiSig {
+    pub signature: [u8; 4627],
+    pub public:    [u8; 2592],
+}
 
 /// Signature container that can store known signature types. This is a simplified version of
 /// `sp_runtime::MultiSignature`. To obtain more functionality, convert this into that type.
-#[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Encode, Decode, Debug, scale_info::TypeInfo)]
+#[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Encode, Decode, Debug, TypeInfo)]
 pub enum MultiSignature {
-    /// An Ed25519 signature.
+    /// An Ed25519 signature (64 bytes).
     Ed25519([u8; 64]),
-    /// An Sr25519 signature.
+    /// An Sr25519 signature (64 bytes).
     Sr25519([u8; 64]),
-    /// An ECDSA/SECP256k1 signature (a 512-bit value, plus 8 bits for recovery ID).
+    /// An ECDSA/secp256k1 signature (65 bytes, incl. recovery id).
     Ecdsa([u8; 65]),
+    /// A Dilithium signature plus the public key used to derive the account id.
+    Dilithium(DilithiumMultiSig),
 }

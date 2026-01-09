@@ -37,6 +37,11 @@ pub mod ecdsa;
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable-eth")))]
 pub mod eth;
 
+// A dilithium key pair implementation.
+#[cfg(feature = "dilithium")]
+#[cfg_attr(docsrs, doc(cfg(feature = "dilithium")))]
+pub mod dilithium;
+
 /// A polkadot-js account json loader.
 #[cfg(feature = "polkadot-js-compat")]
 #[cfg_attr(docsrs, doc(cfg(feature = "polkadot-js-compat")))]
