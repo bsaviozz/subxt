@@ -32,6 +32,7 @@ pub use static_type::Static;
 pub use unchecked_extrinsic::UncheckedExtrinsic;
 pub use wrapper_opaque::WrapperKeepOpaque;
 pub use yesnomaybe::{Maybe, No, NoMaybe, Yes, YesMaybe, YesNo};
+pub use multi_signature::DilithiumMultiSig;
 
 /// Wraps an already encoded byte vector, prevents being encoded as a raw byte vector as part of
 /// the transaction payload

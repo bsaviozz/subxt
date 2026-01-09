@@ -5894,6 +5894,7 @@ dependencies = [
  "proptest",
  "qp-rusty-crystals-dilithium",
  "regex",
+ "scale-info",
  "schnorrkel",
  "scrypt",
  "secp256k1 0.30.0",

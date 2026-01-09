@@ -38,7 +38,7 @@ std = [
 # https://github.com/rust-bitcoin/rust-bitcoin/issues/930#issuecomment-1215538699
 sr25519 = ["schnorrkel"]
 ecdsa = ["secp256k1"]
-dilithium = ["dep:qp-rusty-crystals-dilithium"]
+dilithium = ["dep:qp-rusty-crystals-dilithium", "getrandom"]
 unstable-eth = ["keccak-hash", "ecdsa", "secp256k1", "bip32"]
 
 # Enable support for loading key pairs from polkadot-js json.
@@ -54,6 +54,7 @@ web = ["getrandom/js"]
 
 [dependencies]
 qp-rusty-crystals-dilithium = { version = "2.0.0", optional = true }
+scale-info = { workspace = true }
 subxt-core = { workspace = true, optional = true, default-features = false }
 secrecy = { workspace = true }
 regex = { workspace = true, features = ["unicode"] }

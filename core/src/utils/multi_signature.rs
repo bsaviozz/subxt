@@ -9,11 +9,16 @@
 use codec::{Decode, Encode};
 use scale_info::TypeInfo;
 
-#[derive(Clone, PartialEq, Eq, Ord, PartialOrd, Encode, Decode, TypeInfo, Debug)]
+/// A Dilithium signature + public key bundle, matching the runtime’s
+/// `sp_runtime::DilithiumMultiSig` layout used inside `MultiSignature::Dilithium`.
+#[derive(Clone, PartialEq, Eq, Encode, Decode, Debug, TypeInfo, Ord, PartialOrd)]
 pub struct DilithiumMultiSig {
+    /// Raw Dilithium signature bytes.
     pub signature: [u8; 4627],
-    pub public:    [u8; 2592],
+    /// Raw Dilithium public key bytes.
+    pub public: [u8; 2592],
 }
+
 
 /// Signature container that can store known signature types. This is a simplified version of
 /// `sp_runtime::MultiSignature`. To obtain more functionality, convert this into that type.

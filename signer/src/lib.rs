@@ -37,10 +37,10 @@ pub mod ecdsa;
 #[cfg_attr(docsrs, doc(cfg(feature = "unstable-eth")))]
 pub mod eth;
 
-// A dilithium key pair implementation.
+/// A Dilithium (ML-DSA-87) keypair implementation usable with Subxt when the `dilithium` feature is enabled.
 #[cfg(feature = "dilithium")]
-#[cfg_attr(docsrs, doc(cfg(feature = "dilithium")))]
 pub mod dilithium;
+
 
 /// A polkadot-js account json loader.
 #[cfg(feature = "polkadot-js-compat")]
