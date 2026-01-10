@@ -30,6 +30,9 @@ pub enum MultiSignature {
     Sr25519([u8; 64]),
     /// An ECDSA/secp256k1 signature (65 bytes, incl. recovery id).
     Ecdsa([u8; 65]),
+    /// An ECDSA/secp256k1 signature but with a different address derivation.
+    /// Runtime uses `ecdsa::KeccakSignature`, which SCALE-encodes as 65 bytes.
+    Eth([u8; 65]),
     /// A Dilithium signature plus the public key used to derive the account id.
     Dilithium(DilithiumMultiSig),
 }
