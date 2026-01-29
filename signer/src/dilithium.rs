@@ -1,7 +1,4 @@
-// signer/src/dilithium.rs
-//! Dilithium (ml_dsa_87) keypair implementation compatible with your runtime:
-//! `MultiSignature::Dilithium(DilithiumMultiSig { signature, public })`
-//! where `AccountId32 = blake2_256(public)`.
+//! Dilithium (ml_dsa_87) keypair implementation
 
 use crate::crypto::seed_from_entropy;
 use core::str::FromStr;
@@ -11,10 +8,10 @@ use thiserror::Error as DeriveError;
 
 /// Seed length (bytes) used to generate a Dilithium keypair (matches runtime).
 pub const SEED_LEN: usize = 32;
-/// Dilithium public key length (bytes) for ml_dsa_87 (matches runtime).
-pub const PUBLIC_KEY_LEN: usize = 2592;
-/// Dilithium signature length (bytes) for ml_dsa_87 (matches runtime).
-pub const SIGNATURE_LEN: usize = 4627;
+/// Dilithium public key length.
+pub const PUBLIC_KEY_LEN: usize = ml_dsa_87::PUBLICKEYBYTES;
+/// Dilithium signature length.
+pub const SIGNATURE_LEN: usize = ml_dsa_87::SIGNBYTES;
 
 /// Seed bytes used to generate a keypair.
 pub type SecretKeyBytes = [u8; SEED_LEN];
@@ -29,7 +26,7 @@ impl AsRef<[u8]> for PublicKey {
     }
 }
 
-/// Runtime-compatible Dilithium signature bundle: signature bytes + public key bytes.
+/// Dilithium signature bundle: signature bytes + public key bytes. 
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub struct SignatureBundle {
     /// Raw Dilithium signature bytes.
@@ -75,7 +72,7 @@ impl Keypair {
     /// Sign a message (Subxt signer payload bytes) and return the runtime-compatible bundle:
     /// `{ signature, public }`.
     ///
-    /// IMPORTANT: matches runtime: `sign(message, None, None)` (no ctx, no hedge, no prehash).
+    /// IMPORTANT: matches runtime `sign(message, None, None)`.
     pub fn sign(&self, message: &[u8]) -> SignatureBundle {
         let sig = self.0.sign(message, None, None); // [u8; 4627]
         let pk = self.0.public.to_bytes(); // [u8; 2592]
