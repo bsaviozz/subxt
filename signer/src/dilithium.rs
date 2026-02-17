@@ -56,12 +56,18 @@ impl Keypair {
             .try_into()
             .expect("seed length is SEED_LEN");
 
-        Ok(Self(ml_dsa_87::Keypair::generate(&seed)))
+        Ok(Self({
+            let mut entropy = seed;
+            ml_dsa_87::Keypair::generate((&mut entropy).into())
+        }))
     }
 
     /// Create a keypair from a 32-byte seed.
     pub fn from_seed(seed: SecretKeyBytes) -> Self {
-        Self(ml_dsa_87::Keypair::generate(&seed))
+        Self({
+            let mut entropy = seed;
+            ml_dsa_87::Keypair::generate((&mut entropy).into())
+        })
     }
 
     /// Obtain the public key.
@@ -74,8 +80,12 @@ impl Keypair {
     ///
     /// IMPORTANT: matches runtime `sign(message, None, None)`.
     pub fn sign(&self, message: &[u8]) -> SignatureBundle {
-        let sig = self.0.sign(message, None, None); // [u8; 4627]
-        let pk = self.0.public.to_bytes(); // [u8; 2592]
+        let sig = self
+            .0
+            .sign(message, None, None)
+            .expect("ml_dsa_87 signing failed");
+        let pk = self.0.public.to_bytes();
+
         SignatureBundle {
             signature: sig,
             public: pk,
