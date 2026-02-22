@@ -32,6 +32,10 @@ std = [
     "crypto_secretbox?/std",
 ]
 
+no_std = [
+  "qp-rusty-crystals-dilithium/no_std"
+]
+
 # Pick the signer implementation(s) you need by enabling the
 # corresponding features. Note: I had more difficulties getting
 # ecdsa compiling to WASM on my mac; following this comment helped:
@@ -53,7 +57,7 @@ subxt = ["dep:subxt-core"]
 web = ["getrandom/js"]
 
 [dependencies]
-qp-rusty-crystals-dilithium = { version = "1.0.1", optional = true }
+qp-rusty-crystals-dilithium = { version = "1.0.1", default-features = false, optional = true }
 scale-info = { workspace = true }
 subxt-core = { workspace = true, optional = true, default-features = false }
 secrecy = { workspace = true }
