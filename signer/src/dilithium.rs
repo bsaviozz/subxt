@@ -1,17 +1,15 @@
-//! Dilithium (ml_dsa_87) keypair implementation
+//! Dilithium (ml_dsa_44) keypair implementation
 
 use crate::crypto::seed_from_entropy;
-use core::str::FromStr;
-use qp_rusty_crystals_dilithium::ml_dsa_87;
-use secrecy::ExposeSecret;
+use qp_rusty_crystals_dilithium::ml_dsa_44;
 use thiserror::Error as DeriveError;
 
 /// Seed length (bytes) used to generate a Dilithium keypair (matches runtime).
 pub const SEED_LEN: usize = 32;
 /// Dilithium public key length.
-pub const PUBLIC_KEY_LEN: usize = ml_dsa_87::PUBLICKEYBYTES;
+pub const PUBLIC_KEY_LEN: usize = ml_dsa_44::PUBLICKEYBYTES;
 /// Dilithium signature length.
-pub const SIGNATURE_LEN: usize = ml_dsa_87::SIGNBYTES;
+pub const SIGNATURE_LEN: usize = ml_dsa_44::SIGNBYTES;
 
 /// Seed bytes used to generate a keypair.
 pub type SecretKeyBytes = [u8; SEED_LEN];
@@ -26,7 +24,7 @@ impl AsRef<[u8]> for PublicKey {
     }
 }
 
-/// Dilithium signature bundle: signature bytes + public key bytes. 
+/// Dilithium signature bundle: signature bytes + public key bytes.
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub struct SignatureBundle {
     /// Raw Dilithium signature bytes.
@@ -37,7 +35,7 @@ pub struct SignatureBundle {
 
 /// A Dilithium keypair wrapper.
 #[derive(Clone)]
-pub struct Keypair(pub ml_dsa_87::Keypair);
+pub struct Keypair(pub ml_dsa_44::Keypair);
 
 impl core::fmt::Debug for Keypair {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
@@ -56,18 +54,12 @@ impl Keypair {
             .try_into()
             .expect("seed length is SEED_LEN");
 
-        Ok(Self({
-            let mut entropy = seed;
-            ml_dsa_87::Keypair::generate((&mut entropy).into())
-        }))
+        Ok(Self(ml_dsa_44::Keypair::generate(Some(&seed[..]))))
     }
 
     /// Create a keypair from a 32-byte seed.
     pub fn from_seed(seed: SecretKeyBytes) -> Self {
-        Self({
-            let mut entropy = seed;
-            ml_dsa_87::Keypair::generate((&mut entropy).into())
-        })
+        Self(ml_dsa_44::Keypair::generate(Some(&seed[..])))
     }
 
     /// Obtain the public key.
@@ -78,12 +70,14 @@ impl Keypair {
     /// Sign a message (Subxt signer payload bytes) and return the runtime-compatible bundle:
     /// `{ signature, public }`.
     ///
-    /// IMPORTANT: matches runtime `sign(message, None, None)`.
+    /// IMPORTANT: runtime verifier uses the same message bytes; ctx=None.
+    /// We set hedged=false to avoid RNG.
     pub fn sign(&self, message: &[u8]) -> SignatureBundle {
         let sig = self
             .0
-            .sign(message, None, None)
-            .expect("ml_dsa_87 signing failed");
+            .sign(message, None, false)
+            .expect("ml_dsa_44 signing returned None");
+
         let pk = self.0.public.to_bytes();
 
         SignatureBundle {
@@ -95,9 +89,8 @@ impl Keypair {
 
 /// Verify signature bundle against a message.
 pub fn verify<M: AsRef<[u8]>>(sig: &SignatureBundle, message: M) -> bool {
-    let Ok(pk) = ml_dsa_87::PublicKey::from_bytes(&sig.public) else {
-        return false;
-    };
+    // qp 1.0.1 ml_dsa_44: from_bytes returns PublicKey directly.
+    let pk = ml_dsa_44::PublicKey::from_bytes(&sig.public);
     pk.verify(message.as_ref(), &sig.signature, None)
 }
 

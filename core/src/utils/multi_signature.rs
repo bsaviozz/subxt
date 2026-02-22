@@ -14,9 +14,9 @@ use scale_info::TypeInfo;
 #[derive(Clone, PartialEq, Eq, Encode, Decode, Debug, TypeInfo, Ord, PartialOrd)]
 pub struct DilithiumMultiSig {
     /// Raw Dilithium signature bytes.
-    pub signature: [u8; 4627],
+    pub signature: [u8; 2420],
     /// Raw Dilithium public key bytes.
-    pub public: [u8; 2592],
+    pub public: [u8; 1312],
 }
 
 
