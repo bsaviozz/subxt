@@ -53,7 +53,7 @@ subxt = ["dep:subxt-core"]
 web = ["getrandom/js"]
 
 [dependencies]
-qp-rusty-crystals-dilithium = { version = "1.0.1", optional = true }
+qp-rusty-crystals-dilithium = { version = "1.0.1", default-features = false, features = ["std"] }
 scale-info = { workspace = true }
 subxt-core = { workspace = true, optional = true, default-features = false }
 secrecy = { workspace = true }
