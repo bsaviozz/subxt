@@ -34,8 +34,12 @@ pub struct SignatureBundle {
 }
 
 /// A Dilithium keypair wrapper.
-#[derive(Clone)]
-pub struct Keypair(pub ml_dsa_44::Keypair);
+impl Clone for Keypair {
+    fn clone(&self) -> Self {
+        // Reconstruct from bytes; deterministic and avoids needing Clone on the inner type.
+        Self(ml_dsa_44::Keypair::from_bytes(&self.0.to_bytes()))
+    }
+}
 
 impl core::fmt::Debug for Keypair {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
