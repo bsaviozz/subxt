@@ -33,6 +33,8 @@ pub struct SignatureBundle {
     pub public: [u8; PUBLIC_KEY_LEN],
 }
 
+pub struct Keypair(pub ml_dsa_44::Keypair);
+
 /// A Dilithium keypair wrapper.
 impl Clone for Keypair {
     fn clone(&self) -> Self {
