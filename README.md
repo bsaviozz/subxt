@@ -6,6 +6,8 @@ It has been modified to support **Dilithium (ML-DSA) signatures**, enabling clie
 
 This fork is intended for experimental and benchmarking purposes and does not provide independent releases.
 
+**This branch contains the implementation for ML-DSA-87 signatures**
+
 ## Changes in this fork
 
 - Added support for Dilithium (ML-DSA) signature schemes
